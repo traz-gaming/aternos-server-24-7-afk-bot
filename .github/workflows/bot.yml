@@ -19,6 +19,6 @@ jobs:
     - run: node index.js
       env:
         MC_HOST: Purvandrushik.aternos.me
-        MC_PORT: ${{ secrets.MC_PORT }}
-        MC_USER: ${{ secrets.MC_USER }}
-        MC_VERSION: ${{ secrets.MC_VERSION }}
+        MC_PORT: 34970
+        MC_USER: Server
+        MC_VERSION: 1.21.11
