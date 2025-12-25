@@ -1,32 +1,54 @@
 const mineflayer = require('mineflayer');
 
-const bot = mineflayer.createBot({
-  host: process.env.MC_HOST,
-  port: Number(process.env.MC_PORT),
-  username: process.env.MC_USER,
-  version: process.env.MC_VERSION
-});
+let reconnectCount = 0;
+let bot;
 
-function r(min, max) {
-  return Math.random() * (max - min) + min;
+function startBot(delay = 0) {
+  setTimeout(() => {
+    bot = mineflayer.createBot({
+      host: process.env.MC_HOST,
+      port: Number(process.env.MC_PORT),
+      username: process.env.MC_USER,
+      version: process.env.MC_VERSION
+    });
+
+    function r(min, max) {
+      return Math.random() * (max - min) + min;
+    }
+
+    bot.once('spawn', () => {
+      reconnectCount = 0; // reset when success
+      console.log("Joined server");
+
+      setInterval(() => {
+        const move = ['forward', 'left', 'right'][Math.floor(Math.random()*3)];
+        bot.setControlState(move, true);
+        setTimeout(() => bot.setControlState(move, false), r(300,800));
+        bot.look(Math.random()*360, r(-10,10), true);
+      }, r(5000,9000));
+
+      // natural restart
+      setTimeout(() => process.exit(0), r(25,35)*60000);
+    });
+
+    bot.on('end', reconnect);
+    bot.on('kicked', reconnect);
+    bot.on('error', () => {});
+  }, delay);
 }
 
-bot.on('spawn', () => {
-  setInterval(() => {
-    const move = ['forward', 'left', 'right'][Math.floor(Math.random()*3)];
-    bot.setControlState(move, true);
-    setTimeout(() => bot.setControlState(move, false), r(300,800));
-    bot.look(Math.random()*360, r(-10,10), true);
-  }, r(4000,9000));
+function reconnect() {
+  reconnectCount++;
 
-  setInterval(() => {
-    if (Math.random() < 0.3) {
-      bot.setControlState('jump', true);
-      setTimeout(()=>bot.setControlState('jump', false), 300);
-    }
-  }, r(10000,16000));
+  let delay;
+  if (reconnectCount <= 2) {
+    delay = 3000;        // first 2 fast reconnect
+  } else {
+    delay = 60000;       // then wait 1 minute
+  }
 
-  setTimeout(() => process.exit(0), r(25,35)*60000);
-});
+  console.log(`Reconnect attempt ${reconnectCount}, wait ${delay/1000}s`);
+  startBot(delay);
+}
 
-bot.on('end', () => process.exit(0));
+startBot();
