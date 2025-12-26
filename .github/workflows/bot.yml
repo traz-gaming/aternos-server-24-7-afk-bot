@@ -2,7 +2,7 @@ name: MC Bot
 
 on:
   schedule:
-    - cron: "*/2 * * * *"
+    - cron: "* * * * *"   # every 1 minute (most reliable)
   workflow_dispatch:
 
 jobs:
@@ -11,14 +11,17 @@ jobs:
     timeout-minutes: 9
 
     steps:
-    - uses: actions/checkout@v3
-    - uses: actions/setup-node@v3
-      with:
-        node-version: 18
-    - run: npm install
-    - run: node index.js
-      env:
-        MC_HOST: Purvandrushik.aternos.me
-        MC_PORT: 34970
-        MC_USER: Server
-        MC_VERSION: 1.21.11
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - run: npm install
+
+      - run: node index.js
+        env:
+          MC_HOST: Purvandrushik.aternos.me
+          MC_PORT: 34970
+          MC_USER: duck
+          MC_VERSION: 1.21.11
