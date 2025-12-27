@@ -27,7 +27,7 @@ function startBot(delay = 0) {
       }, r(5000,9000));
 
       // job finish after ~8 min
-      setTimeout(() => process.exit(0), 28 * 60 * 1000);
+      setTimeout(() => process.exit(0), 8 * 60 * 1000);
     });
 
     const reconnect = () => {
