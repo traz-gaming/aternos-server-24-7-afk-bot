@@ -21,7 +21,7 @@ jobs:
 
       - run: node index.js
         env:
-          MC_HOST: Purvandrushik.aternos.me
-          MC_PORT: 34970
+          MC_HOST: Purvandrushik.play.hosting
+          MC_PORT: 35908
           MC_USER: duck
           MC_VERSION: 1.21.11
